@@ -5,9 +5,9 @@ import pandas as pd
 
 c=2
 T=24
-gamma=1#因子为零表示不考虑同伴效应的作用
+gamma=0.5#因子为零表示不考虑同伴效应的作用
 n=20
-lamda = 0.3
+lamda = 0.5
 #构造t矩阵
 gamma_m = np.matrix(np.multiply(gamma,np.identity(n)))
 #构造w矩阵，密集矩阵
@@ -31,8 +31,8 @@ def getResults(k1,k2,w,p=0):
     #print(vector_d)
     
     M = lamda_m+2*gamma_m-gamma_m*w
-    x_k=np.zeros((1,n))
-    y = np.zeros((1,n))
+    x_k=np.zeros(n)
+    y = np.zeros(n)
     for k in range(0,list_a.shape[0]):
         #计算向量a和矩阵b
         vector_a = np.array(list_a.iloc[k,:])
@@ -41,6 +41,8 @@ def getResults(k1,k2,w,p=0):
         #使用w和t重新计算矩阵b
         H = (matrix_b+M).I
         y = y+x_k
+        print("y为：")
+        print(y)
         #计算p
         l = np.dot(np.dot(np.ones(n),H),(vector_a[:,None]+np.dot(((k/T)*lamda_m),vector_d)-np.dot(M,y.reshape(-1,1))))
         #l = np.dot(np.dot(np.ones(n),H),np.dot((vector_a+((k/T)*lamda_m),(vector_d))))
@@ -49,10 +51,11 @@ def getResults(k1,k2,w,p=0):
             p = (l+2*c*l*h)/(2*h+2*c*h*h)
          #计算x_k
         #print((p*np.ones(n)).reshape(-1,1))
-        x_k = (np.dot((matrix_b+M).I,(vector_a[:,None]-(p*np.ones(n)).reshape(-1,1)+np.dot(((k/T)*lamda_m),vector_d)-np.dot(M,y.reshape(-1,1))))).reshape(1,-1)
+        x_k = (np.dot((matrix_b+M).I,(vector_a[:,None]-(p*np.ones(n)).reshape(-1,1)+np.dot(((k/T)*lamda_m),vector_d)-np.dot(M,y.reshape(-1,1))))).reshape(1,-1)        
+        x_k[x_k<0]=0
+        print("x_k为：")
         print(x_k)
-        
-        x_sum.append(np.dot(np.ones(n),np.array(x_k.reshape(-1,1))))
+        x_sum.append(np.sum(x_k))
 
 #试验3
 getResults(1,9,w0)
@@ -61,7 +64,7 @@ getResults(16,17,w0)
 getResults(17,21,w0);
 getResults(21,24,w0)
 getResults(24,25,w0)
-print(x_sum)
+#print(x_sum)
 print("--------------------------------------")
 fig = plt.figure(figsize=(18, 8))  
 ax = plt.subplot(111)
@@ -88,7 +91,7 @@ getResults(16,17,w0)
 getResults(17,21,w0);
 getResults(21,24,w0)
 getResults(24,25,w0)
-print(x_sum)
+#print(x_sum)
 line1,=ax.plot(x_sum, ls='-',lw=2.8,color='blue',marker='o',label='Electicity Load')
 plt.legend(fontsize='xx-large')
 plt.ylabel("Total consumption",fontsize=20)
@@ -98,7 +101,7 @@ plt.savefig("p1.pdf")
 c=2
 T=24
 gamma=0#因子为零表示不考虑同伴效应的作用
-
+lamda = 0
 #构造t矩阵
 gamma_m = np.matrix(np.multiply(gamma,np.identity(n)))
 #构造w矩阵，密集矩阵
