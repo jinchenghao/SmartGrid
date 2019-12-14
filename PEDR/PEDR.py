@@ -12,9 +12,9 @@ n=20
 x_sum=[]
 x_sum_2=[]
 x_sum_4=[]
-t = np.matrix(np.multiply(m,np.identity(n-1)))
+t = np.matrix(np.multiply(m,np.identity(n)))
 
-w = np.matrix(np.multiply(1/(n-1),np.ones((n-1,n-1)))) - np.matrix(np.multiply(1/(n-1),np.identity(n-1)))
+w = np.matrix(np.multiply(1/(n),np.ones((n,n)))) - np.matrix(np.multiply(1/(n),np.identity(n)))
 
 #第三个图
 def getResults(k1,k2):
@@ -25,15 +25,15 @@ def getResults(k1,k2):
 #        print(list_a.iloc[i,:])
         vector_a = np.array(list_a.iloc[i,:])
         vector_b = np.array(list_b.iloc[i,:])
-        matrix_b = np.matrix(np.multiply(2*vector_b,np.identity(n-1)))
+        matrix_b = np.matrix(np.multiply(2*vector_b,np.identity(n)))
         matrix_b_1 = matrix_b+2*t-np.dot(t,w)
         #计算p
-        h = np.dot(np.dot(np.ones(n-1),matrix_b_1.I),vector_a)
-        l = np.dot(np.dot(np.ones(n-1),matrix_b_1.I),np.ones(n-1))
+        h = np.dot(np.dot(np.ones(n),matrix_b_1.I),vector_a)
+        l = np.dot(np.dot(np.ones(n),matrix_b_1.I),np.ones(n))
         p = (h*(1+2*c*l))/(2*l*(1+c*l))
          #计算x_k
-        x_k = np.dot(matrix_b_1.I,(vector_a-p*np.ones(n-1)).reshape(-1, 1))
-        x_sum.append(np.dot(np.ones(n-1),np.array(x_k)))
+        x_k = np.dot(matrix_b_1.I,(vector_a-p*np.ones(n)).reshape(-1, 1))
+        x_sum.append(np.dot(np.ones(n),np.array(x_k)))
 #第二个图     
 def getResults1(k1,k2):
     list_a = pd.read_csv("..//data//a%s-%s.csv"%(k1,k2),header=-1)
@@ -43,14 +43,14 @@ def getResults1(k1,k2):
 #        print(list_a.iloc[i,:])
         vector_a = np.array(list_a.iloc[i,:])
         vector_b = np.array(list_b.iloc[i,:])
-        matrix_b = np.matrix(np.multiply(2*vector_b,np.identity(n-1)))
+        matrix_b = np.matrix(np.multiply(2*vector_b,np.identity(n)))
         #计算p
-        h = np.dot(np.dot(np.ones(n-1),matrix_b.I),vector_a)
-        l = np.dot(np.dot(np.ones(n-1),matrix_b.I),np.ones(n-1))
+        h = np.dot(np.dot(np.ones(n),matrix_b.I),vector_a)
+        l = np.dot(np.dot(np.ones(n),matrix_b.I),np.ones(n))
         p = (h*(1+2*c*l))/(2*l*(1+c*l))
          #计算x_k
-        x_k = np.dot(matrix_b.I,(vector_a-p*np.ones(n-1)).reshape(-1, 1))
-        x_sum_2.append(np.dot(np.ones(n-1),np.array(x_k)))
+        x_k = np.dot(matrix_b.I,(vector_a-p*np.ones(n)).reshape(-1, 1))
+        x_sum_2.append(np.dot(np.ones(n),np.array(x_k)))
 
 #第一个图       
 def getResults4(k1,k2):
@@ -79,12 +79,7 @@ getResults1(17,21);
 getResults1(21,24)
 getResults1(24,25)
 #第一个图
-getResults4(1,9)
-getResults4(9,16)
-getResults4(16,17)
-getResults4(17,21);
-getResults4(21,24)
-getResults4(24,25)
+
 
 fig = plt.figure(figsize=(18, 8))  
 ax = plt.subplot(111)
